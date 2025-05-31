@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@theme{
+    --color-dark-blue: #274472;
+    --color-midnight-blue: #41729f;
+    --color-blue-gray: #5885AF;
+    --color-baby-blue: #c3e0e5;
+    --color-start: #4CAF50;
+    --color-end: #F44336;
+    --color-obstacle: #424242;
+    --color-visited: #E3F2FD;
+    --color-current: #2196F3;
+    --color-path: #FF9800;
+}
+
+.cell {
+  transition: all 0.2s ease;
+}
+
+@layer utilities {
+  .animate-pulse-slow {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}

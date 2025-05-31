@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A* Search Pathfinding Visualizer</title>
+    <link href="dist/output.css" rel="stylesheet" />
+  </head>
+  <body
+    class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 font-sans"
+  >
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">
+          A* Search Pathfinding Visualizer
+        </h1>
+        <p class="text-gray-600 text-lg">Interactive Algorithm Demonstration</p>
+      </div>
+      <div class="mb-4 flex flex-wrap justify-between gap-4">
+        <!-- Save/Load Buttons -->
+        <div class="flex gap-2">
+          <button
+            id="saveBtn"
+            class="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded font-medium transition-colors duration-200 text-sm"
+          >
+            💾 Save Grid
+          </button>
+          <button
+            id="loadBtn"
+            class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-1 rounded font-medium transition-colors duration-200 text-sm"
+          >
+            📂 Load Grid
+          </button>
+        </div>
+
+        <!-- Drawing & Edit Tools -->
+        <div class="flex gap-2">
+          <button
+            id="eraseBtn"
+            class="tool-btn bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-medium transition-colors duration-200"
+          >
+            ⛔ Erase Walls
+          </button>
+          <button
+            id="setStartBtn"
+            class="tool-btn bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded font-medium transition-colors duration-200"
+          >
+            🟢 Set Start
+          </button>
+          <button
+            id="setEndBtn"
+            class="tool-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded font-medium transition-colors duration-200"
+          >
+            🔴 Set End
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Visualizer Card -->
+      <div class="bg-white/90 backdrop-blur-sm shadow-xl rounded-lg mb-6 p-6">
+        <!-- Control Panel -->
+        <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+          <div class="flex flex-wrap gap-4 items-center">
+            <button
+              id="startBtn"
+              class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-medium transition-colors duration-200"
+            >
+              ▶ Find Path
+            </button>
+
+            <button
+              id="resetBtn"
+              class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded font-medium transition-colors duration-200"
+            >
+              ↻ Reset Grid
+            </button>
+
+            <button
+              id="clearBtn"
+              class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded font-medium transition-colors duration-200"
+            >
+              ✎ Clear Path
+            </button>
+
+            <!-- Grid Size Control -->
+            <div class="flex items-center gap-3 ml-4">
+              <span class="text-sm font-medium text-gray-700">Grid Size:</span>
+              <input
+                type="range"
+                id="gridSizeSlider"
+                min="5"
+                max="20"
+                value="10"
+                class="w-32"
+              />
+              <span
+                id="gridSizeLabel"
+                class="text-sm font-medium text-blue-600 min-w-[3ch]"
+                >10×10</span
+              >
+            </div>
+          </div>
+
+          <!-- Status Indicator -->
+          <div class="flex items-center gap-3">
+            <div
+              id="status"
+              class="px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-700"
+            >
+              Ready to start A* Search
+            </div>
+            <div
+              id="spinner"
+              class="hidden animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div
+          class="flex flex-wrap items-center justify-center gap-6 mb-6 p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg border"
+        >
+          <div class="flex items-center gap-2">
+            <div
+              class="w-5 h-5 bg-start rounded border border-gray-300 flex items-center justify-center text-white text-xs font-bold"
+            >
+              S
+            </div>
+            <span class="text-sm text-gray-700 font-medium">Start</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div
+              class="w-5 h-5 bg-end rounded border border-gray-300 flex items-center justify-center text-white text-xs font-bold"
+            >
+              E
+            </div>
+            <span class="text-sm text-gray-700 font-medium">End</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div
+              class="w-5 h-5 bg-dark-blue rounded border border-gray-300"
+            ></div>
+            <span class="text-sm text-gray-700 font-medium">Obstacle</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div
+              class="w-5 h-5 bg-baby-blue rounded border border-gray-300"
+            ></div>
+            <span class="text-sm text-gray-700 font-medium">Explored</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-5 h-5 bg-path rounded border border-gray-300"></div>
+            <span class="text-sm text-gray-700 font-medium">Optimal Path</span>
+          </div>
+        </div>
+
+        <!-- Grid Container -->
+        <div class="flex justify-center">
+          <div
+            class="inline-block p-4 bg-gradient-to-br from-midnight-blue to-blue-gray rounded-xl border-2 border-gray-200 shadow-inner"
+          >
+            <div
+              id="grid"
+              class="grid gap-0.5 rounded-lg overflow-hidden shadow-lg"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <h3 class="font-semibold text-blue-800 mb-2 flex items-center gap-2">
+            ℹ Instructions
+          </h3>
+          <ul class="text-blue-700 text-sm space-y-1">
+            <li>• Click and drag on cells to place/remove obstacles (walls)</li>
+            <li>
+              • Click Set Start and Set End to set the start and end of the path
+            </li>
+            <li>• Use Erase Walls to remove obstacles</li>
+            <li>• Adjust grid size using the slider (5×5 to 20×20)</li>
+            <li>
+              • Click "Find Path" to watch A* algorithm find the optimal route
+            </li>
+            <li>
+              • Baby blue cells show explored nodes, orange shows the shortest
+              path
+            </li>
+            <li>
+              • Use "Reset Grid" to clear everything or "Clear Path" to remove
+              only the visualization
+            </li>
+            <li>
+              • Save and load grids using the buttons above to preserve the
+              obstacle layout. (Note: The saved grid does is strict to the saved
+              grid size)
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <script src="src/indexscript.js"></script>
+  </body>
+</html>
